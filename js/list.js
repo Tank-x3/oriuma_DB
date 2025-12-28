@@ -1,10 +1,14 @@
 /**
- * List Page Logic
- * キャラクター一覧画面の制御
+ * List Page Logic with Modal Details
+ * キャラクター一覧画面の制御（モーダル表示版）
  */
+
+let allCharacters = []; // Global store for loaded characters
+let definitions = null;  // Global store for definitions
 
 document.addEventListener('DOMContentLoaded', () => {
     initList();
+    setupModalEvents();
 });
 
 async function initList() {
@@ -12,29 +16,58 @@ async function initList() {
     const loading = document.getElementById('loading-view');
 
     try {
-        // Fetch List
-        const result = await callAPI('getList');
+        // Fetch ALL Data and Definitions in parallel
+        const [dataRes, defsRes] = await Promise.all([
+            callAPI('getAllData'), // Expecting { status: 'success', data: [...] }
+            callAPI('getDefs')     // Expecting { status: 'success', defs: [...] }
+        ]);
 
-        if (result && result.status === 'success' && result.list && Array.isArray(result.list)) {
-            renderList(grid, result.list);
+        // Process Definitions
+        if (defsRes && defsRes.status === 'success' && defsRes.defs) {
+            definitions = processDefs(defsRes.defs);
         } else {
-            throw new Error(result.message || 'データの取得に失敗しました。');
+            console.warn('Definitions fetch failed or empty. Using fallback.');
+        }
+
+        // Process Data
+        if (dataRes && dataRes.status === 'success' && Array.isArray(dataRes.list)) {
+            allCharacters = dataRes.list;
+            renderList(grid, allCharacters);
+            loading.style.display = 'none';
+        } else {
+            throw new Error(dataRes.message || 'データの取得に失敗しました。');
         }
 
     } catch (e) {
         console.error(e);
+        loading.style.display = 'none';
         grid.innerHTML = `<div class="error-msg text-center">
             <p>エラーが発生しました: ${e.message}</p>
         </div>`;
-    } finally {
-        loading.style.display = 'none';
     }
 }
 
 /**
+ * Convert API defs array to usable object map (Copied/Adapted from register.js logic)
+ */
+function processDefs(defsArray) {
+    const defs = {};
+    defsArray.forEach(row => {
+        if (row.col_id && row.items) {
+            defs[row.col_id] = {
+                title: row.category_name || row.col_id,
+                items: row.items.map(itemStr => ({
+                    key: itemStr,
+                    label: itemStr
+                }))
+            };
+        }
+    });
+    return defs;
+}
+
+/**
  * リスト描画
- * @param {HTMLElement} container 
- * @param {Array} list 
  */
 function renderList(container, list) {
     container.innerHTML = '';
@@ -44,13 +77,12 @@ function renderList(container, list) {
         return;
     }
 
-    list.forEach(item => {
-        // Card HTML
+    list.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'char-card fade-in';
-        card.onclick = () => alert('詳細ページは準備中です。');
+        // Pass index to openModal
+        card.onclick = () => openModal(index);
 
-        // Image Placeholder logic
         const imgUrl = item.image_url ? item.image_url : 'https://placehold.co/400x400?text=No+Image';
 
         card.innerHTML = `
@@ -59,10 +91,125 @@ function renderList(container, list) {
             </div>
             <div class="card-info">
                 <h3>${item.name}</h3>
-                <p class="sub-text">更新: ${item.updated_at || '-'}</p>
+                <p class="sub-text">更新: ${formatDate(item.updated_at)}</p>
             </div>
         `;
-
         container.appendChild(card);
     });
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    // Simple format check or return as is
+    return dateStr;
+}
+
+/* --- Modal Logic --- */
+
+function setupModalEvents() {
+    const modal = document.getElementById('char-modal');
+    const closeBtns = document.querySelectorAll('.close-btn, .close-modal-trigger');
+
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeModal();
+        }
+    });
+}
+
+function openModal(index) {
+    const charData = allCharacters[index];
+    if (!charData) return;
+
+    const modal = document.getElementById('char-modal');
+    const body = document.getElementById('modal-body');
+
+    // Build Content
+    body.innerHTML = renderModalContent(charData);
+
+    // Show
+    modal.style.display = 'flex'; // Flex for centering
+    document.body.style.overflow = 'hidden'; // Lock Body Scroll
+}
+
+function closeModal() {
+    const modal = document.getElementById('char-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = ''; // Unlock Body Scroll
+}
+
+/**
+ * モーダル内コンテンツ生成
+ */
+function renderModalContent(data) {
+    const imgUrl = data.image_url ? data.image_url : 'https://placehold.co/400x400?text=No+Image';
+    let html = `
+        <div class="modal-header-area">
+            <div class="modal-thumb">
+                <img src="${imgUrl}" alt="${data.name}">
+            </div>
+            <div class="modal-title-block">
+                <h2>${data.name}</h2>
+                ${data.name_en ? `<p class="text-en">${data.name_en}</p>` : ''}
+                ${data.name_hk ? `<p class="text-hk">${data.name_hk}</p>` : ''}
+                <p class="trainer-badge">Trainer: ${data.trainer_name || '未設定'}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="modal-details">
+    `;
+
+    // Render Dynamic Fields based on definitions
+    if (definitions) {
+        // Order: ext_001, ext_002, ext_003
+        ['ext_001', 'ext_002', 'ext_003'].forEach(catKey => {
+            const catDef = definitions[catKey];
+            const catData = data[catKey]; // Expecting object { height: "...", ... }
+
+            if (catDef && catData) {
+                html += `<div class="detail-section">
+                    <h3>${catDef.title}</h3>
+                    <table class="detail-table">`;
+
+                catDef.items.forEach(item => {
+                    const val = catData[item.key];
+                    if (val) {
+                        html += `<tr>
+                            <th>${item.label}</th>
+                            <td>${val}</td>
+                         </tr>`;
+                    }
+                });
+
+                // Free Items for ext_003?
+                if (catKey === 'ext_003' && catData.free && Array.isArray(catData.free)) {
+                    catData.free.forEach(fItem => {
+                        html += `<tr>
+                            <th>${fItem.label}</th>
+                            <td>${fItem.value}</td>
+                         </tr>`;
+                    });
+                }
+
+                html += `</table></div>`;
+            }
+        });
+    } else {
+        html += `<p class="error">定義情報がロードされていないため詳細を表示できません。</p>`;
+    }
+
+    html += `</div>`; // End modal-details
+    return html;
 }
