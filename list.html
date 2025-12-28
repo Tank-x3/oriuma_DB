@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character List | Oriuma DB</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* List page specific styles handled in style.css */
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1><a href="index.html">🐎 Oriuma DB</a></h1>
+        </div>
+        <nav>
+            <a href="list.html" class="active">List</a>
+            <a href="register.html">Register</a>
+            <a href="#">About</a>
+        </nav>
+    </header>
+
+    <div class="container fade-in">
+        <div class="header-card">
+            <h2>キャラクター一覧</h2>
+            <p>登録されているオリウマ娘たちを表示します。</p>
+        </div>
+
+        <main>
+            <div id="loading-view" class="text-center" style="margin: 3rem 0;">
+                <p>読み込み中...</p>
+            </div>
+
+            <div id="character-grid" class="char-grid">
+                <!-- JS via callAPI('getList') -->
+            </div>
+
+            <div class="mt-4 text-center">
+                <a href="register.html" class="btn btn-primary">＋ 新規登録</a>
+                <br><br>
+                <a href="index.html" class="btn-link">トップへ戻る</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Oriuma Project</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/list.js"></script>
+
+</body>
+
+</html>

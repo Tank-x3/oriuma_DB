@@ -319,8 +319,8 @@ async function HandleSubmit(e) {
         const dlBtn = document.getElementById('btn-download-json');
         dlBtn.onclick = () => downloadJSON(payload, `backup_${new Date().getTime()}.json`);
 
-        // 3. Auto Download (Try)
-        downloadJSON(payload, `backup_${new Date().getTime()}.json`);
+        // 3. Auto Download (Disabled per Task 06)
+        // downloadJSON(payload, `backup_${new Date().getTime()}.json`);
 
     } catch (err) {
         alert(`登録に失敗しました。\n${err.message}`);
