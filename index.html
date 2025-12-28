@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oriuma Character Database</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🐎 Oriuma DB</h1>
+            <p>オリウマ キャラクターデータベース</p>
+        </header>
+
+        <main class="menu-grid">
+            <!-- List View -->
+            <a href="#" class="menu-card" id="btn-list">
+                <h2>📜 List</h2>
+                <p>キャラクター一覧を見る</p>
+            </a>
+
+            <!-- Register -->
+            <a href="#" class="menu-card" id="btn-register">
+                <h2>✨ Register</h2>
+                <p>新規キャラクター登録</p>
+            </a>
+
+            <!-- About -->
+            <a href="#" class="menu-card" id="btn-about">
+                <h2>ℹ️ About</h2>
+                <p>ガイドライン / このサイトについて</p>
+            </a>
+        </main>
+
+        <div class="text-center mt-4">
+            <button id="btn-test-connection" class="btn btn-test">📡 API接続テスト</button>
+        </div>
+
+        <footer>
+            &copy; 2025 Oriuma Project
+        </footer>
+    </div>
+
+    <script>
+        // Inline script for connection test specifically for this page
+        document.getElementById('btn-test-connection').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-test-connection');
+            const originalText = btn.textContent;
+            btn.textContent = 'User Requesting...';
+            btn.disabled = true;
+
+            try {
+                // Call API with 'getList' action as a test (expecting some list or empty array)
+                const result = await callAPI('getList');
+                console.log('Test Result:', result);
+                alert('API接続成功！\n詳細はコンソールを確認してください。');
+            } catch (error) {
+                console.error(error);
+                alert('API接続失敗...\n詳細はコンソールを確認してください。');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Placeholder links
+        document.getElementById('btn-list').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('一覧ページは準備中です。');
+        });
+        document.getElementById('btn-register').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('登録ページは準備中です。');
+        });
+        document.getElementById('btn-about').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Aboutページは準備中です。');
+        });
+    </script>
+</body>
+</html>
