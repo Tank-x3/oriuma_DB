@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規登録 - Oriuma DB</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/register.js" defer></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>✨ New Entry</h1>
+            <p>新規キャラクター登録</p>
+            <a href="index.html" class="btn-link">← Topへ戻る</a>
+        </header>
+
+        <main>
+            <form id="register-form" class="form-card">
+
+                <!-- Main Name Selection -->
+                <div class="form-group box-selection">
+                    <label class="section-label">メイン表記選択 <span class="badge-required">必須</span></label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="is_en_main" value="false" checked>
+                            <span class="radio-text">🇯🇵 カナ名をメイン</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="is_en_main" value="true">
+                            <span class="radio-text">🇺🇸 欧字名をメイン</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Fixed Fields -->
+                <div class="form-group">
+                    <label for="name_kana">名前 (カナ) <span id="req-kana" class="badge-required">必須</span></label>
+                    <input type="text" id="name_kana" name="name_kana" placeholder="例: スペシャルウィーク">
+                </div>
+
+                <div class="form-group">
+                    <label for="name_en">Name (English) <span id="req-en" class="badge-required"
+                            style="display:none;">必須</span></label>
+                    <input type="text" id="name_en" name="name_en" placeholder="例: Special Week">
+                </div>
+
+                <div class="form-group">
+                    <label for="name_hk">Name (Hong Kong) <span class="badge-any">任意</span></label>
+                    <input type="text" id="name_hk" name="name_hk" placeholder="例: 特别周">
+                </div>
+
+                <div class="form-group">
+                    <label for="trainer_name">トレーナー名 <span class="badge-any">任意</span></label>
+                    <input type="text" id="trainer_name" name="trainer_name">
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url">アイコンURL <span class="badge-any">任意</span></label>
+                    <input type="text" id="image_url" name="image_url" placeholder="https://...">
+                </div>
+
+                <!-- Dynamic Fields Container -->
+                <div id="dynamic-fields-loading">
+                    <p>項目定義をロード中...</p>
+                </div>
+                <div id="dynamic-fields">
+                    <!-- JS will inject fields here -->
+                </div>
+
+                <hr class="divider">
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">編集用パスワード <span class="badge-required">必須</span></label>
+                    <input type="password" id="password" name="password" required placeholder="半角英数推奨">
+                    <p class="hint">※後でデータを編集・削除する際に必要になります。</p>
+                </div>
+
+                <!-- Actions -->
+                <div class="form-actions text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">登録する</button>
+                </div>
+
+            </form>
+        </main>
+
+        <footer>
+            &copy; 2025 Oriuma Project
+        </footer>
+    </div>
+</body>
+
+</html>

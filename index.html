@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oriuma Character Database</title>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
     <!-- Styles -->
     <link rel="stylesheet" href="css/style.css">
     <!-- Scripts -->
@@ -13,6 +16,7 @@
     <script src="js/api.js"></script>
     <script src="js/main.js"></script>
 </head>
+
 <body>
 
     <div class="container">
@@ -29,7 +33,7 @@
             </a>
 
             <!-- Register -->
-            <a href="#" class="menu-card" id="btn-register">
+            <a href="register.html" class="menu-card">
                 <h2>✨ Register</h2>
                 <p>新規キャラクター登録</p>
             </a>
@@ -77,14 +81,11 @@
             e.preventDefault();
             alert('一覧ページは準備中です。');
         });
-        document.getElementById('btn-register').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('登録ページは準備中です。');
-        });
         document.getElementById('btn-about').addEventListener('click', (e) => {
             e.preventDefault();
             alert('Aboutページは準備中です。');
         });
     </script>
 </body>
+
 </html>

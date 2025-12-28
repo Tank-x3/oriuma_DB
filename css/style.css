@@ -4,12 +4,15 @@
    Base & Reset
    ========================================================================== */
 :root {
-    --primary-color: #69C953; /* e.g., Turf Green */
+    --primary-color: #69C953;
+    /* e.g., Turf Green */
     --primary-dark: #4CAF50;
-    --accent-color: #FF4081; /* Pink accent */
+    --accent-color: #FF4081;
+    /* Pink accent */
     --accent-hover: #F50057;
     --text-color: #333333;
-    --bg-color: #F0F4F8; /* Light gray-ish blue */
+    --bg-color: #F0F4F8;
+    /* Light gray-ish blue */
     --white: #FFFFFF;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --radius: 12px;
@@ -34,7 +37,8 @@ body {
    Layout
    ========================================================================== */
 .container {
-    max-width: 600px; /* Mobile first optimization */
+    max-width: 600px;
+    /* Mobile first optimization */
     margin: 0 auto;
     padding: 20px;
     min-height: 100vh;
@@ -105,7 +109,8 @@ footer {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    border-radius: 50px; /* Pill shape */
+    border-radius: 50px;
+    /* Pill shape */
     font-weight: bold;
     text-decoration: none;
     cursor: pointer;
@@ -135,5 +140,167 @@ footer {
 }
 
 /* Utility */
-.text-center { text-align: center; }
-.mt-4 { margin-top: 2rem; }
+.text-center {
+    text-align: center;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+.form-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(105, 201, 83, 0.2);
+}
+
+.hint {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 4px;
+}
+
+/* Badges */
+.badge-required {
+    background-color: var(--accent-color);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.badge-any {
+    background-color: #aaa;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* Radio Box Selection */
+.box-selection {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: var(--radius);
+    border: 1px solid #eee;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.radio-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.radio-text {
+    font-weight: bold;
+}
+
+/* Details/Summary (Accordion) */
+details {
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+summary {
+    background: #f0f0f0;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    outline: none;
+    list-style: none;
+    /* remove default triangle in some browsers */
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary::after {
+    content: '+';
+    float: right;
+    font-weight: bold;
+}
+
+details[open] summary::after {
+    content: '-';
+}
+
+.accordion-content {
+    padding: 20px;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
+
+/* Free Items */
+.btn-remove {
+    background: #ccc;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-remove:hover {
+    background: #999;
+}
+
+.btn-link {
+    text-decoration: none;
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.btn-link:hover {
+    color: var(--primary-color);
+}
