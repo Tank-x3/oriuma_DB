@@ -236,9 +236,10 @@ function setupValidation() {
  */
 async function HandleSubmit(e) {
     e.preventDefault();
+    const form = e.target;
 
     // 1. Validation
-    const fd = new FormData(e.target);
+    const fd = new FormData(form);
     const isEnMain = fd.get('is_en_main') === 'true';
     const nameKana = fd.get('name_kana');
     const nameEn = fd.get('name_en');
@@ -291,6 +292,12 @@ async function HandleSubmit(e) {
         });
     }
 
+    // 3. UI Status Update
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信中...';
+
     console.log('Register Payload (Flat):', payload);
 
     try {
@@ -302,18 +309,26 @@ async function HandleSubmit(e) {
             throw new Error(res.message || '登録処理中にサーバーエラーが発生しました。');
         }
 
-        // Success
-        alert('登録が完了しました！\n確認のため、入力データのバックアップをダウンロードします。');
+        // Success Flow
+        // 1. Hide Form, Show Success View
+        form.style.display = 'none';
+        const successView = document.getElementById('success-view');
+        successView.style.display = 'block';
 
-        // Download Backup
+        // 2. Setup Download Button (Manual)
+        const dlBtn = document.getElementById('btn-download-json');
+        dlBtn.onclick = () => downloadJSON(payload, `backup_${new Date().getTime()}.json`);
+
+        // 3. Auto Download (Try)
         downloadJSON(payload, `backup_${new Date().getTime()}.json`);
-
-        // Redirect
-        window.location.href = 'index.html';
 
     } catch (err) {
         alert(`登録に失敗しました。\n${err.message}`);
         console.error(err);
+
+        // Re-enable button on error
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
     }
 }
 
