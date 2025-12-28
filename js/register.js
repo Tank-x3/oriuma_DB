@@ -28,11 +28,21 @@ const MOCK_DEFS = {
     }
 };
 
+
+let currentEditId = null; // ID if in Edit Mode
+
 document.addEventListener('DOMContentLoaded', () => {
     init();
 });
 
 async function init() {
+    // 0. Check for Edit Mode (First priority)
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    if (id) {
+        startEditMode(id);
+    }
+
     // 1. Load Definitions
     await loadDefinitions();
 
@@ -42,6 +52,242 @@ async function init() {
     // 3. Setup Form Submit
     const form = document.getElementById('register-form');
     form.addEventListener('submit', HandleSubmit);
+}
+
+// ... (loadDefinitions, renderForm, addFreeItem, setupValidation remain same)
+
+/**
+ * 編集モード開始
+ */
+function startEditMode(id) {
+    currentEditId = id;
+
+    // UI Updates
+    document.title = "編集モード - Oriuma DB";
+    document.querySelector('h1').textContent = "📝 Edit Entry";
+    document.querySelector('header p').textContent = "キャラクター情報の編集";
+    const submitBtn = document.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = "更新する";
+
+    // Show Auth Modal
+    const authModal = document.getElementById('auth-modal');
+    authModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Auth Event
+    document.getElementById('btn-auth-submit').addEventListener('click', checkAuth);
+}
+
+/**
+ * 認証処理
+ */
+async function checkAuth() {
+    const pwdInput = document.getElementById('auth-password');
+    const pwd = pwdInput.value;
+    const errText = document.getElementById('auth-error');
+
+    // Reset Error
+    errText.style.display = 'none';
+
+    if (!pwd) {
+        errText.textContent = 'パスワードを入力してください';
+        errText.style.display = 'block';
+        return;
+    }
+
+    const btn = document.getElementById('btn-auth-submit');
+    const orgText = btn.textContent;
+    btn.textContent = '確認中...';
+    btn.disabled = true;
+
+    try {
+        const res = await callAPI('getEditData', { id: currentEditId, password: pwd });
+
+        if (res.status === 'success' && res.data) {
+            // Success
+            document.getElementById('auth-modal').style.display = 'none';
+            document.body.style.overflow = '';
+
+            // Fill Form
+            fillForm(res.data, pwd);
+
+        } else {
+            throw new Error(res.message || '認証に失敗しました');
+        }
+
+    } catch (e) {
+        console.error(e);
+        errText.textContent = 'パスワードが違います'; // Simplify message for user
+        errText.style.display = 'block';
+    } finally {
+        btn.textContent = orgText;
+        btn.disabled = false;
+    }
+}
+
+/**
+ * フォームにデータを充填
+ */
+function fillForm(data, password) {
+    // Basic Info
+    const radios = document.getElementsByName('is_en_main');
+    const isEn = (data.is_en_main === true || data.is_en_main === 'true');
+    radios.forEach(r => {
+        if (r.value === String(isEn)) r.checked = true;
+    });
+    // Trigger validation update
+    const evt = new Event('change');
+    radios[0].dispatchEvent(evt); // Dispatch on any to trigger handler
+
+    document.getElementById('name_kana').value = data.name_kana || '';
+    document.getElementById('name_en').value = data.name_en || '';
+    document.getElementById('name_hk').value = data.name_hk || '';
+    document.getElementById('trainer_name').value = data.trainer_name || '';
+    document.getElementById('image_url').value = data.image_url || '';
+
+    // Password (Auto-fill)
+    document.getElementById('password').value = password;
+
+    // Dynamic Fields
+    // Predefined items
+    document.querySelectorAll('[data-category]').forEach(input => {
+        const catKey = input.dataset.category;
+        const itemKey = input.dataset.key;
+
+        if (data[catKey] && data[catKey][itemKey]) {
+            input.value = data[catKey][itemKey];
+        }
+    });
+
+    // Free items (ext_003)
+    if (data.ext_003 && data.ext_003.free && Array.isArray(data.ext_003.free)) {
+        const container = document.getElementById('free-items-container');
+        // Clear existing empty inputs if any? usually container has predefined items too.
+        // We append free items.
+        data.ext_003.free.forEach(fItem => {
+            addFreeItem(container, fItem.label, fItem.value);
+        });
+    }
+}
+
+// Override addFreeItem to accept values
+function addFreeItem(container, label = '', value = '') {
+    const idx = container.querySelectorAll('.free-item-row').length;
+    const div = document.createElement('div');
+    div.className = 'form-group free-item-row';
+    div.style.display = 'flex';
+    div.style.gap = '10px';
+    div.style.alignItems = 'center';
+
+    div.innerHTML = `
+        <input type="text" placeholder="項目名 (例: 好きな食べ物)" class="free-label-input" style="flex:1;" value="${label}">
+        <span>:</span>
+        <input type="text" placeholder="値" class="free-value-input" style="flex:2;" value="${value}">
+        <button type="button" class="btn-remove" onclick="this.parentElement.remove()">×</button>
+    `;
+    container.appendChild(div);
+}
+
+// ... setupValidation remains same
+
+/**
+ * 送信処理
+ */
+async function HandleSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+
+    // 1. Validation
+    const fd = new FormData(form);
+    const isEnMain = fd.get('is_en_main') === 'true';
+    const nameKana = fd.get('name_kana');
+    const nameEn = fd.get('name_en');
+    const password = fd.get('password');
+
+    if (isEnMain) {
+        if (!nameEn) { alert('欧字名をメインにする場合は Name (English) が必須です。'); return; }
+    } else {
+        if (!nameKana) { alert('カナ名をメインにする場合は 名前 (カナ) が必須です。'); return; }
+    }
+
+    if (!password) { alert('編集用パスワードは必須です。'); return; }
+
+    // 2. Data Construction (Flattened for GAS)
+    const payload = {
+        id: currentEditId || undefined, // Add ID if updating
+        // Basic Info
+        is_en_main: isEnMain,
+        name_kana: nameKana,
+        name_en: nameEn,
+        name_hk: fd.get('name_hk'),
+        trainer_name: fd.get('trainer_name'),
+        image_url: fd.get('image_url'),
+        password: password
+    };
+
+    // Collect dynamic inputs
+    document.querySelectorAll('[data-category]').forEach(input => {
+        const cat = input.dataset.category;
+        const key = input.dataset.key;
+        const val = input.value;
+
+        if (!payload[cat]) payload[cat] = {};
+        if (val) payload[cat][key] = val;
+    });
+
+    // Free items
+    const freeRows = document.querySelectorAll('.free-item-row');
+    if (freeRows.length > 0) {
+        if (!payload['ext_003']) payload['ext_003'] = {};
+        if (!payload['ext_003']['free']) payload['ext_003']['free'] = [];
+
+        freeRows.forEach(row => {
+            const l = row.querySelector('.free-label-input').value;
+            const v = row.querySelector('.free-value-input').value;
+            if (l && v) {
+                payload['ext_003']['free'].push({ label: l, value: v });
+            }
+        });
+    }
+
+    // 3. UI Status Update
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信中...';
+
+    // Decide Action
+    const action = currentEditId ? 'update' : 'register';
+
+    try {
+        // Send to API
+        const res = await callAPI(action, payload);
+
+        // Strict Error Handling
+        if (res.status !== 'success') {
+            throw new Error(res.message || '処理中にサーバーエラーが発生しました。');
+        }
+
+        // Success Flow
+        form.style.display = 'none';
+        const successView = document.getElementById('success-view');
+        successView.style.display = 'block';
+
+        // Update Message for Edit
+        if (currentEditId) {
+            successView.querySelector('h2').textContent = '🎉 更新完了';
+            successView.querySelector('p').textContent = 'キャラクター情報の更新が完了しました。';
+        }
+
+        const dlBtn = document.getElementById('btn-download-json');
+        dlBtn.onclick = () => downloadJSON(payload, `backup_${new Date().getTime()}.json`);
+
+    } catch (err) {
+        alert(`${currentEditId ? '更新' : '登録'}に失敗しました。\n${err.message}`);
+        console.error(err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+    }
 }
 
 /**
@@ -231,114 +477,4 @@ function setupValidation() {
     updateRequired(); // init
 }
 
-/**
- * 送信処理
- */
-async function HandleSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
 
-    // 1. Validation
-    const fd = new FormData(form);
-    const isEnMain = fd.get('is_en_main') === 'true';
-    const nameKana = fd.get('name_kana');
-    const nameEn = fd.get('name_en');
-    const password = fd.get('password');
-
-    if (isEnMain) {
-        if (!nameEn) { alert('欧字名をメインにする場合は Name (English) が必須です。'); return; }
-    } else {
-        if (!nameKana) { alert('カナ名をメインにする場合は 名前 (カナ) が必須です。'); return; }
-    }
-
-    if (!password) { alert('編集用パスワードは必須です。'); return; }
-
-    // 2. Data Construction (Flattened for GAS)
-    const payload = {
-        // Basic Info (Flattened)
-        is_en_main: isEnMain,
-        name_kana: nameKana,
-        name_en: nameEn,
-        name_hk: fd.get('name_hk'),
-        trainer_name: fd.get('trainer_name'),
-        image_url: fd.get('image_url'),
-        password: password
-    };
-
-    // Collect dynamic inputs (Flattened by category)
-    // Predefined
-    document.querySelectorAll('[data-category]').forEach(input => {
-        const cat = input.dataset.category;
-        const key = input.dataset.key;
-        const val = input.value;
-
-        // Ensure category object exists in top-level payload
-        if (!payload[cat]) payload[cat] = {};
-        if (val) payload[cat][key] = val;
-    });
-
-    // Free items (ext_003) - Special handling to merge into ext_003 object
-    const freeRows = document.querySelectorAll('.free-item-row');
-    if (freeRows.length > 0) {
-        if (!payload['ext_003']) payload['ext_003'] = {};
-        if (!payload['ext_003']['free']) payload['ext_003']['free'] = [];
-
-        freeRows.forEach(row => {
-            const l = row.querySelector('.free-label-input').value;
-            const v = row.querySelector('.free-value-input').value;
-            if (l && v) {
-                payload['ext_003']['free'].push({ label: l, value: v });
-            }
-        });
-    }
-
-    // 3. UI Status Update
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = '送信中...';
-
-    console.log('Register Payload (Flat):', payload);
-
-    try {
-        // Send to API
-        const res = await callAPI('register', payload);
-
-        // Strict Error Handling
-        if (res.status !== 'success') {
-            throw new Error(res.message || '登録処理中にサーバーエラーが発生しました。');
-        }
-
-        // Success Flow
-        // 1. Hide Form, Show Success View
-        form.style.display = 'none';
-        const successView = document.getElementById('success-view');
-        successView.style.display = 'block';
-
-        // 2. Setup Download Button (Manual)
-        const dlBtn = document.getElementById('btn-download-json');
-        dlBtn.onclick = () => downloadJSON(payload, `backup_${new Date().getTime()}.json`);
-
-        // 3. Auto Download (Disabled per Task 06)
-        // downloadJSON(payload, `backup_${new Date().getTime()}.json`);
-
-    } catch (err) {
-        alert(`登録に失敗しました。\n${err.message}`);
-        console.error(err);
-
-        // Re-enable button on error
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
-    }
-}
-
-function downloadJSON(data, filename) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}

@@ -109,10 +109,20 @@ function formatDate(dateStr) {
 function setupModalEvents() {
     const modal = document.getElementById('char-modal');
     const closeBtns = document.querySelectorAll('.close-btn, .close-modal-trigger');
+    const editBtn = document.getElementById('btn-modal-edit');
 
     closeBtns.forEach(btn => {
         btn.addEventListener('click', closeModal);
     });
+
+    // Edit Button Action
+    if (editBtn) {
+        editBtn.addEventListener('click', () => {
+            if (currentModalCharId) {
+                window.location.href = `register.html?id=${currentModalCharId}`;
+            }
+        });
+    }
 
     // Close on background click
     modal.addEventListener('click', (e) => {
@@ -132,6 +142,8 @@ function setupModalEvents() {
 function openModal(index) {
     const charData = allCharacters[index];
     if (!charData) return;
+
+    currentModalCharId = charData.id; // Store ID
 
     const modal = document.getElementById('char-modal');
     const body = document.getElementById('modal-body');

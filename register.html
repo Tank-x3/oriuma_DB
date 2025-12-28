@@ -109,6 +109,27 @@
                     <a href="index.html" class="btn-link">トップへ戻る</a>
                 </div>
             </div>
+
+            <!-- Auth Modal for Edit Mode -->
+            <div id="auth-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content fade-in-up" style="max-width: 400px; margin: auto;">
+                    <div class="modal-header-area" style="justify-content: center; padding: 20px 0 0;">
+                        <h3>🔒 認証が必要です</h3>
+                    </div>
+                    <div id="modal-body" style="text-align: center;">
+                        <p style="margin-bottom: 15px;">この記事を編集するためのパスワードを入力してください。</p>
+                        <input type="password" id="auth-password" class="form-control" placeholder="Password"
+                            style="width: 80%; padding: 10px; margin-bottom: 10px;">
+                        <p id="auth-error" class="error-text"
+                            style="display:none; color: var(--accent-color); font-weight: bold;">パスワードが違います</p>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <button id="btn-auth-submit" class="btn btn-primary">認証する</button>
+                        <br>
+                        <a href="list.html" class="btn-link">キャンセルして戻る</a>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <footer>
