@@ -15,11 +15,17 @@ async function initList() {
     const grid = document.getElementById('character-grid');
     const loading = document.getElementById('loading-view');
 
+    // Setup Events
+    setupModalEvents();
+
+    // Fetch News (Parallel)
+    fetchNews();
+
     try {
-        // Fetch ALL Data and Definitions in parallel
+        // Fetch ALL Data and Definitions
         const [dataRes, defsRes] = await Promise.all([
-            callAPI('getAllData'), // Expecting { status: 'success', data: [...] }
-            callAPI('getDefs')     // Expecting { status: 'success', defs: [...] }
+            callAPI('getAllData'),
+            callAPI('getDefs')
         ]);
 
         // Process Definitions
@@ -44,6 +50,24 @@ async function initList() {
         grid.innerHTML = `<div class="error-msg text-center">
             <p>エラーが発生しました: ${e.message}</p>
         </div>`;
+    }
+}
+
+async function fetchNews() {
+    const ticker = document.getElementById('news-ticker');
+    if (!ticker) return;
+
+    try {
+        const res = await callAPI('getNews');
+        if (res.status === 'success' && res.news && res.news.length > 0) {
+            // Display latest news
+            const latest = res.news[0];
+            ticker.textContent = `📢 ${latest.date} : ${latest.message}`;
+            ticker.style.display = 'block';
+        }
+    } catch (e) {
+        console.warn('News fetch failed:', e);
+        // ticker.style.display = 'none'; // Keep hidden
     }
 }
 
