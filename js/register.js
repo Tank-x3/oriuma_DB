@@ -56,8 +56,23 @@ async function loadDefinitions() {
         try {
             // Attempt to fetch from API
             const result = await callAPI('getDefs');
-            if (result && result.status === 'success' && result.data) {
-                defs = result.data;
+
+            // Fix: Check for 'defs' (Array) instead of 'data' (Object)
+            if (result && result.status === 'success' && result.defs) {
+                // Adapter: Convert Array to Object map for renderForm
+                defs = {};
+                result.defs.forEach(row => {
+                    // Expecting row: { col_id: "ext_001", category_name: "...", items: ["..."] }
+                    if (row.col_id && row.items) {
+                        defs[row.col_id] = {
+                            title: row.category_name || row.col_id,
+                            items: row.items.map(itemStr => ({
+                                key: itemStr,   // Use the string as both key and label
+                                label: itemStr
+                            }))
+                        };
+                    }
+                });
             }
         } catch (e) {
             console.warn('API getDefs failed, using mock data.', e);
@@ -237,51 +252,55 @@ async function HandleSubmit(e) {
 
     if (!password) { alert('編集用パスワードは必須です。'); return; }
 
-    // 2. Data Construction
+    // 2. Data Construction (Flattened for GAS)
     const payload = {
+        // Basic Info (Flattened)
         is_en_main: isEnMain,
-        basic: {
-            name_kana: nameKana,
-            name_en: nameEn,
-            name_hk: fd.get('name_hk'),
-            trainer_name: fd.get('trainer_name'),
-            image_url: fd.get('image_url'),
-            password: password
-        },
-        dynamic: {}
+        name_kana: nameKana,
+        name_en: nameEn,
+        name_hk: fd.get('name_hk'),
+        trainer_name: fd.get('trainer_name'),
+        image_url: fd.get('image_url'),
+        password: password
     };
 
-    // Collect dynamic inputs
+    // Collect dynamic inputs (Flattened by category)
     // Predefined
     document.querySelectorAll('[data-category]').forEach(input => {
         const cat = input.dataset.category;
         const key = input.dataset.key;
         const val = input.value;
 
-        if (!payload.dynamic[cat]) payload.dynamic[cat] = {};
-        if (val) payload.dynamic[cat][key] = val;
+        // Ensure category object exists in top-level payload
+        if (!payload[cat]) payload[cat] = {};
+        if (val) payload[cat][key] = val;
     });
 
-    // Free items (ext_003)
+    // Free items (ext_003) - Special handling to merge into ext_003 object
     const freeRows = document.querySelectorAll('.free-item-row');
     if (freeRows.length > 0) {
-        if (!payload.dynamic['ext_003']) payload.dynamic['ext_003'] = {};
-        if (!payload.dynamic['ext_003']['free']) payload.dynamic['ext_003']['free'] = [];
+        if (!payload['ext_003']) payload['ext_003'] = {};
+        if (!payload['ext_003']['free']) payload['ext_003']['free'] = [];
 
         freeRows.forEach(row => {
             const l = row.querySelector('.free-label-input').value;
             const v = row.querySelector('.free-value-input').value;
             if (l && v) {
-                payload.dynamic['ext_003']['free'].push({ label: l, value: v });
+                payload['ext_003']['free'].push({ label: l, value: v });
             }
         });
     }
 
-    console.log('Register Payload:', payload);
+    console.log('Register Payload (Flat):', payload);
 
     try {
         // Send to API
         const res = await callAPI('register', payload);
+
+        // Strict Error Handling
+        if (res.status !== 'success') {
+            throw new Error(res.message || '登録処理中にサーバーエラーが発生しました。');
+        }
 
         // Success
         alert('登録が完了しました！\n確認のため、入力データのバックアップをダウンロードします。');
@@ -293,7 +312,7 @@ async function HandleSubmit(e) {
         window.location.href = 'index.html';
 
     } catch (err) {
-        alert('登録に失敗しました。コンソールを確認してください。');
+        alert(`登録に失敗しました。\n${err.message}`);
         console.error(err);
     }
 }
