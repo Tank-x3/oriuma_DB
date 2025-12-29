@@ -60,14 +60,14 @@ async function fetchNews() {
     try {
         const res = await callAPI('getNews');
         if (res.status === 'success' && res.news && Array.isArray(res.news) && res.news.length > 0) {
-            
+
             let html = '<ul class="news-list" style="list-style:none; padding:0; margin:0; text-align:left;">';
-            
+
             res.news.forEach(item => {
                 const date = item.date || '---';
                 const label = item.label || ''; // e.g. [Info]
                 const msg = item.message || '';
-                
+
                 html += `
                     <li style="border-bottom:1px dashed #ddd; padding: 5px 0;">
                         <span class="news-date" style="font-weight:bold; margin-right:10px; color:#666;">${date}</span>
@@ -76,13 +76,12 @@ async function fetchNews() {
                     </li>
                 `;
             });
-            
+
             html += '</ul>';
-            
+
             ticker.innerHTML = html;
             ticker.style.display = 'block';
-            ticker.style.backgroundColor = '#fff'; // Reset background for list view
-            ticker.style.border = '1px solid #ddd';
+            ticker.className = 'news-ticker-area';
         }
     } catch (e) {
         console.warn('News fetch failed:', e);
