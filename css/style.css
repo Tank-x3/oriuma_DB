@@ -24,6 +24,8 @@
     --ticker-bg: #fff3cd;
     --ticker-text: #856404;
     --ticker-border: #ffeeba;
+    --section-bg: #FFFFFF;
+    --summary-bg: #f0f0f0;
 }
 
 [data-theme="dark"] {
@@ -47,6 +49,8 @@
     --ticker-bg: #2c2c2c;
     --ticker-text: #ffd54f;
     --ticker-border: #444;
+    --section-bg: var(--card-bg);
+    --summary-bg: #333333;
 }
 
 * {
@@ -116,6 +120,23 @@ header h1 a {
     color: var(--text-color);
     margin-top: 8px;
     opacity: 0.8;
+}
+
+header nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+header nav a:hover {
+    color: var(--primary-color);
+}
+
+header nav a.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
 }
 
 footer {
@@ -359,6 +380,34 @@ footer {
     border: 1px solid var(--border-color);
 }
 
+.about-section {
+    background: var(--section-bg);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h3 {
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+}
+
+.step-card {
+    background: var(--summary-bg);
+    border-left: 5px solid var(--primary-color);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.step-card h4 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
 .radio-group {
     display: flex;
     gap: 20px;
@@ -385,7 +434,7 @@ details {
 }
 
 summary {
-    background: #f0f0f0;
+    background: var(--summary-bg);
     padding: 12px;
     cursor: pointer;
     font-weight: bold;
@@ -410,7 +459,7 @@ details[open] summary::after {
 
 .accordion-content {
     padding: 20px;
-    background: #fff;
+    background: var(--section-bg);
     border-top: 1px solid #eee;
 }
 
@@ -591,6 +640,6 @@ details[open] summary::after {
 .detail-table td {
     padding: 8px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color);
     border-bottom: 1px solid #f0f0f0;
 }
