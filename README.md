@@ -2,8 +2,7 @@
 
 **「オリウマ」のキャラクター設定を、みんなで共有・保存できるデータベースツールです。**
 
-[👉 データベースを開く (Demo Link)](https://your-username.github.io/oriuma-db/)  
-*(ここに実際のGitHub PagesのURLを入れてください)*
+[👉 データベースを開く](https://tank-x3.github.io/oriuma_DB/)  
 
 ---
 
