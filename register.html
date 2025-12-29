@@ -23,12 +23,14 @@
     <div class="container">
         <header>
             <div class="logo-area">
-                <h1><a href="index.html">🐎 Oriuma DB</a></h1>
+                <h1><a href="index.html" style="text-decoration:none; color:var(--primary-dark);">🐎 Oriuma DB</a></h1>
             </div>
             <nav style="margin-top: 10px;">
                 <a href="list.html">List</a>
-                <a href="register.html" class="active">New Entry</a>
+                <a href="register.html" class="active">Register</a>
                 <a href="about.html">About</a>
+                <button id="theme-toggle" class="btn-icon"
+                    style="background:none; border:none; font-size:1.2rem; cursor:pointer; margin-left:10px;">🌙</button>
             </nav>
             <p>新規キャラクター登録</p>
         </header>
@@ -80,7 +82,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image_url">アイコンURL <span class="badge-any">任意</span></label>
+                    <label for="image_url">アイコンURL <span class="badge-any">任意</span> <span
+                            style="font-size:0.8rem; color:#666;">(推奨アスペクト比 16:9)</span></label>
                     <input type="text" id="image_url" name="image_url" placeholder="https://..." autocomplete="off">
                 </div>
 

@@ -59,19 +59,33 @@ async function fetchNews() {
 
     try {
         const res = await callAPI('getNews');
-        if (res.status === 'success' && res.news && res.news.length > 0) {
-            // Display latest news
-            const latest = res.news[0];
-            // Format: YYYY/MM/DD : 問い合わせID: XXXX の対応が完了しました
-            const dateStr = latest.timestamp || '日付不明';
-            const msg = latest.inquiry_id ? `問い合わせID: ${latest.inquiry_id} の対応が完了しました` : (latest.message || 'お知らせ');
-
-            ticker.textContent = `📢 ${dateStr} : ${msg}`;
+        if (res.status === 'success' && res.news && Array.isArray(res.news) && res.news.length > 0) {
+            
+            let html = '<ul class="news-list" style="list-style:none; padding:0; margin:0; text-align:left;">';
+            
+            res.news.forEach(item => {
+                const date = item.date || '---';
+                const label = item.label || ''; // e.g. [Info]
+                const msg = item.message || '';
+                
+                html += `
+                    <li style="border-bottom:1px dashed #ddd; padding: 5px 0;">
+                        <span class="news-date" style="font-weight:bold; margin-right:10px; color:#666;">${date}</span>
+                        ${label ? `<span class="news-label" style="background:#5bd; color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; margin-right:5px;">${label}</span>` : ''}
+                        <span class="news-message">${msg}</span>
+                    </li>
+                `;
+            });
+            
+            html += '</ul>';
+            
+            ticker.innerHTML = html;
             ticker.style.display = 'block';
+            ticker.style.backgroundColor = '#fff'; // Reset background for list view
+            ticker.style.border = '1px solid #ddd';
         }
     } catch (e) {
         console.warn('News fetch failed:', e);
-        // ticker.style.display = 'none'; // Keep hidden
     }
 }
 

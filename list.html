@@ -15,18 +15,19 @@
 
 <body>
 
-    <header>
-        <div class="logo-area">
-            <h1><a href="index.html">🐎 Oriuma DB</a></h1>
-        </div>
-        <nav>
-            <a href="list.html" class="active">List</a>
-            <a href="register.html">Register</a>
-            <a href="about.html">About</a>
-        </nav>
-    </header>
-
     <div class="container fade-in">
+        <header>
+            <div class="logo-area">
+                <h1><a href="index.html" style="text-decoration:none; color:var(--primary-dark);">🐎 Oriuma DB</a></h1>
+            </div>
+            <nav style="margin-top: 10px;">
+                <a href="list.html">List</a>
+                <a href="register.html">Register</a>
+                <a href="about.html">About</a>
+                <button id="theme-toggle" class="btn-icon"
+                    style="background:none; border:none; font-size:1.2rem; cursor:pointer; margin-left:10px;">🌙</button>
+            </nav>
+        </header>
         <div id="news-ticker"
             style="display:none; background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 1px solid #ffeeba;">
             <!-- News injected here -->

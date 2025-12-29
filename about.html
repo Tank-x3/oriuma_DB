@@ -45,12 +45,14 @@
 
     <header>
         <div class="logo-area">
-            <h1><a href="index.html">🐎 Oriuma DB</a></h1>
+            <h1><a href="index.html" style="text-decoration:none; color:var(--primary-dark);">🐎 Oriuma DB</a></h1>
         </div>
-        <nav>
+        <nav style="margin-top: 10px;">
             <a href="list.html">List</a>
             <a href="register.html">Register</a>
             <a href="about.html" class="active">About</a>
+            <button id="theme-toggle" class="btn-icon"
+                style="background:none; border:none; font-size:1.2rem; cursor:pointer; margin-left:10px;">🌙</button>
         </nav>
     </header>
 
@@ -95,7 +97,8 @@
                 <div class="step-card">
                     <h4>Step 2: 再登録 (Re-registration)</h4>
                     <p><strong>バックアップがある場合:</strong> 「新規登録」画面の「📂 バックアップから復元」ボタンを使って再登録してください（名前の後ろに自動で
-                        <code>(再登録)</code> がつきます）。</p>
+                        <code>(再登録)</code> がつきます）。
+                    </p>
                     <p><strong>バックアップがない場合:</strong> 手動で新規登録を行ってください。その際、名前に重複エラーが出ないよう、末尾に自分で <code>(再登録)</code>
                         等をつけてください。</p>
                 </div>
