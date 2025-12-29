@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Oriuma DB</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .about-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .about-section h3 {
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+
+        .step-card {
+            background: #f8f9fa;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .step-card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1><a href="index.html">🐎 Oriuma DB</a></h1>
+        </div>
+        <nav>
+            <a href="list.html">List</a>
+            <a href="register.html">Register</a>
+            <a href="about.html" class="active">About</a>
+        </nav>
+    </header>
+
+    <div class="container fade-in">
+        <div class="header-card">
+            <h2>About Oriuma DB</h2>
+            <p>このサイトについて・利用ガイドライン</p>
+        </div>
+
+        <main>
+            <!-- Overview -->
+            <section class="about-section">
+                <h3>📖 概要 (Overview)</h3>
+                <p>オリウマDBへようこそ。</p>
+                <p>このツールは、コミュニティ「オリウマ」のキャラクター設定を共有・保存するための場所です。</p>
+                <p>あなたの作成したオリウマ娘を登録し、みんなで共有しましょう。</p>
+            </section>
+
+            <!-- Guidelines -->
+            <section class="about-section">
+                <h3>⚖️ 利用ガイドライン (Guidelines)</h3>
+                <ul>
+                    <li>公序良俗に反する内容は登録しないでください。</li>
+                    <li>画像の著作権には十分配慮してください（公式画像や他者のファンアートの無断転載禁止）。</li>
+                    <li>他人のキャラクターを無断で編集・改変しないでください。</li>
+                </ul>
+            </section>
+
+            <!-- Security & Recovery -->
+            <section class="about-section">
+                <h3>🔑 パスワードを忘れた場合 (Recovery Flow)</h3>
+                <p>編集用パスワードを忘れた場合の救済措置として、以下の手順で<strong>データの再登録と紐付け（統合）</strong>を行うことができます。</p>
+
+                <div class="step-card">
+                    <h4>Step 1: 申告 (Reporting)</h4>
+                    <p>「編集」画面に進み、認証モーダル内の<span
+                            style="color:var(--primary-color); font-weight:bold;">「パスワードを忘れた場合はこちら」</span>をクリックして申告してください。
+                    </p>
+                    <p>送信後に表示される<strong>「問い合わせID」を必ず控えてください</strong>。</p>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 2: 再登録 (Re-registration)</h4>
+                    <p><strong>バックアップがある場合:</strong> 「新規登録」画面の「📂 バックアップから復元」ボタンを使って再登録してください（名前の後ろに自動で
+                        <code>(再登録)</code> がつきます）。</p>
+                    <p><strong>バックアップがない場合:</strong> 手動で新規登録を行ってください。その際、名前に重複エラーが出ないよう、末尾に自分で <code>(再登録)</code>
+                        等をつけてください。</p>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 3: 完了報告 (Resolution Report)</h4>
+                    <p>再登録が完了した後の画面にある<span
+                            style="color:var(--secondary-color); font-weight:bold;">「問い合わせ対応の完了報告」</span>ボタンをクリックしてください。
+                    </p>
+                    <p>Step 1で控えた「問い合わせID」を入力して送信してください。</p>
+                </div>
+
+                <div class="step-card">
+                    <h4>Step 4: 対応待ち (Waiting)</h4>
+                    <p>管理者が重複データを確認し、古いデータの内容を新しいデータに統合（または削除）します。</p>
+                    <p>対応が完了すると、トップページ（リスト画面）上部のニュースエリアに対応完了のお知らせが表示されます。</p>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section class="about-section">
+                <h3>✉️ お問い合わせ (Contact)</h3>
+                <p>ツールの不具合報告やご要望は、以下のフォームからお願いします。</p>
+                <div class="text-center mt-4">
+                    <a href="#" class="btn btn-secondary">お問い合わせフォームへ</a>
+                </div>
+            </section>
+
+            <div class="mt-4 text-center">
+                <a href="index.html" class="btn-link">トップへ戻る</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Oriuma Project</p>
+            <p style="font-size: 0.8rem; margin-top: 5px;"><a href="Docs/DEVELOPMENT_ROADMAP.md" target="_blank"
+                    style="color:#aaa;">Development Roadmap</a></p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

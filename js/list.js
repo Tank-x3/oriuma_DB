@@ -62,7 +62,11 @@ async function fetchNews() {
         if (res.status === 'success' && res.news && res.news.length > 0) {
             // Display latest news
             const latest = res.news[0];
-            ticker.textContent = `📢 ${latest.date} : ${latest.message}`;
+            // Format: YYYY/MM/DD : 問い合わせID: XXXX の対応が完了しました
+            const dateStr = latest.timestamp || '日付不明';
+            const msg = latest.inquiry_id ? `問い合わせID: ${latest.inquiry_id} の対応が完了しました` : (latest.message || 'お知らせ');
+
+            ticker.textContent = `📢 ${dateStr} : ${msg}`;
             ticker.style.display = 'block';
         }
     } catch (e) {
