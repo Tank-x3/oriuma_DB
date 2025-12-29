@@ -37,7 +37,7 @@
         <main>
             <div class="form-card" style="margin-bottom: 2rem;">
                 <h3>📤 バックアップから復元 (再登録)</h3>
-                <p style="font-size: 0.9rem; color: #666;">JSONファイルを読み込んで自動入力します。リネームされ、パスワードはリセットされます。</p>
+                <p class="description-text">JSONファイルを読み込んで自動入力します。リネームされ、パスワードはリセットされます。</p>
                 <input type="file" id="import-json" accept=".json" class="form-control" style="margin-top: 10px;">
             </div>
 
@@ -73,7 +73,7 @@
 
                 <div class="form-group">
                     <label for="name_hk">Name (Hong Kong) <span class="badge-any">任意</span></label>
-                    <input type="text" id="name_hk" name="name_hk" placeholder="例: 特别週" autocomplete="off">
+                    <input type="text" id="name_hk" name="name_hk" placeholder="例: 特别周" autocomplete="off">
                 </div>
 
                 <div class="form-group">
@@ -82,8 +82,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image_url">アイコンURL <span class="badge-any">任意</span> <span
-                            style="font-size:0.8rem; color:#666;">(推奨アスペクト比 16:9)</span></label>
+                    <label for="image_url">アイコンURL <span class="badge-any">任意</span> <span class="description-text"
+                            style="font-size:0.8rem;">(推奨アスペクト比 16:9)</span></label>
                     <input type="text" id="image_url" name="image_url" placeholder="https://..." autocomplete="off">
                 </div>
 
@@ -125,7 +125,8 @@
                 <div class="mt-4" style="border-top: 1px dashed #ccc; padding-top: 15px;">
                     <button id="btn-open-resolve" class="btn btn-secondary" style="font-size: 0.9rem;">🛠
                         問い合わせ対応の完了報告</button>
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">※パスワード忘れ等の対応で再登録を行った場合はこちら</p>
+                    <p class="description-text" style="font-size: 0.8rem; margin-top: 5px;">※パスワード忘れ等の対応で再登録を行った場合はこちら
+                    </p>
                 </div>
                 <div class="mt-4">
                     <a href="index.html" class="btn-link">トップへ戻る</a>
@@ -205,10 +206,9 @@
         </main>
 
         <footer>
-            &copy; 2025 タンクの人
+            &copy; 2025 Oriuma Project
         </footer>
     </div>
 </body>
-
 
 </html>

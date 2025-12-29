@@ -25,7 +25,12 @@
     --ticker-text: #856404;
     --ticker-border: #ffeeba;
     --section-bg: #FFFFFF;
+    --ticker-border: #ffeeba;
+    --section-bg: #FFFFFF;
     --summary-bg: #f0f0f0;
+
+    /* New Class Vars */
+    --description-text: #666;
 }
 
 [data-theme="dark"] {
@@ -50,7 +55,24 @@
     --ticker-text: #ffd54f;
     --ticker-border: #444;
     --section-bg: #1e1e1e;
+    --section-bg: var(--card-bg);
     --summary-bg: #333333;
+
+    /* Dark Mode Vars */
+    --description-text: #aaa;
+}
+
+.description-text {
+    color: var(--description-text);
+}
+
+[data-theme="dark"] .trainer-badge {
+    background: #444;
+    color: #ddd;
+}
+
+[data-theme="dark"] .detail-table th {
+    color: #bbb;
 }
 
 [data-theme="dark"] .form-group input::placeholder,
@@ -265,6 +287,14 @@ footer {
 
 .btn-test:hover {
     background-color: #888;
+}
+
+/* Force white text on buttons to prevent link color override */
+.btn,
+.btn-primary,
+a.btn,
+a.btn-primary {
+    color: #fff !important;
 }
 
 /* Character List Grid */
@@ -678,8 +708,19 @@ details[open] summary::after {
 
 .modal-title-block p {
     margin: 2px 0 0;
-    color: #666;
     font-size: 0.9rem;
+}
+
+.text-sub {
+    color: #666;
+}
+
+[data-theme="dark"] .text-sub {
+    color: #ccc;
+}
+
+[data-theme="dark"] .card-info .sub-text {
+    color: #aaa;
 }
 
 .trainer-badge {

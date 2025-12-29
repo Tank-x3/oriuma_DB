@@ -208,6 +208,16 @@ function closeModal() {
  */
 function renderModalContent(data) {
     const imgUrl = data.image_url ? data.image_url : 'https://placehold.co/400x400?text=No+Image';
+
+    // Name Logic based on is_en_main
+    const isEnMain = (data.is_en_main === true || data.is_en_main === 'true');
+    let subName = '';
+    if (isEnMain) {
+        if (data.name_kana) subName = `<p class="text-sub">${data.name_kana}</p>`;
+    } else {
+        if (data.name_en) subName = `<p class="text-sub">${data.name_en}</p>`;
+    }
+
     let html = `
         <div class="modal-header-area">
             <div class="modal-thumb">
@@ -215,8 +225,8 @@ function renderModalContent(data) {
             </div>
             <div class="modal-title-block">
                 <h2>${data.name}</h2>
-                ${data.name_en ? `<p class="text-en">${data.name_en}</p>` : ''}
-                ${data.name_hk ? `<p class="text-hk">${data.name_hk}</p>` : ''}
+                ${subName}
+                ${data.name_hk ? `<p class="text-sub">${data.name_hk}</p>` : ''}
                 <p class="trainer-badge">Trainer: ${data.trainer_name || '未設定'}</p>
             </div>
         </div>
