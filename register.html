@@ -24,6 +24,7 @@
         <header>
             <div class="header-logo">
                 <h1><a href="index.html">🐎 Oriuma DB</a></h1>
+                <p class="header-tagline">オリウマ キャラクターデータベース</p>
             </div>
             <nav>
                 <a href="list.html">List</a>
@@ -59,13 +60,14 @@
 
                 <!-- Fixed Fields -->
                 <div class="form-group">
-                    <label for="name_kana">名前 (カナ) <span id="req-kana" class="badge-required">必須</span></label>
+                    <label for="name_kana">名前 (カナ) <span id="req-kana" class="badge-required">必須</span><span
+                            id="any-kana" class="badge-any" style="display:none">任意</span></label>
                     <input type="text" id="name_kana" name="name_kana" placeholder="例: スペシャルウィーク" autocomplete="off">
                 </div>
 
                 <div class="form-group">
                     <label for="name_en">Name (English) <span id="req-en" class="badge-required"
-                            style="display:none;">必須</span></label>
+                            style="display:none">必須</span><span id="any-en" class="badge-any">任意</span></label>
                     <input type="text" id="name_en" name="name_en" placeholder="例: Special Week" autocomplete="off">
                 </div>
 

@@ -45,12 +45,55 @@
 
     /* Dark Mode Overrides */
     --header-text-shadow: 2px 2px 0px #333;
-    --modal-bg: var(--card-bg);
+    --modal-bg: #1e1e1e;
     --ticker-bg: #2c2c2c;
     --ticker-text: #ffd54f;
     --ticker-border: #444;
-    --section-bg: var(--card-bg);
+    --section-bg: #1e1e1e;
     --summary-bg: #333333;
+}
+
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #888;
+}
+
+[data-theme="dark"] .hint,
+[data-theme="dark"] .sub-text {
+    color: #aaa;
+}
+
+[data-theme="dark"] .badge-any {
+    background-color: #555;
+    color: #ddd;
+}
+
+[data-theme="dark"] .modal-footer {
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+[data-theme="dark"] .btn-secondary {
+    background: #444;
+    color: #fff;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background: #555;
+}
+
+[data-theme="dark"] a {
+    color: #82b1ff;
+}
+
+[data-theme="dark"] header nav a {
+    color: var(--text-color);
+    /* Correctly inherit text color for nav */
+}
+
+[data-theme="dark"] header nav a:hover,
+[data-theme="dark"] header nav a.active {
+    color: var(--primary-color);
 }
 
 * {
@@ -65,6 +108,10 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+}
+
+html {
+    overflow-y: scroll;
 }
 
 /* ==========================================================================
@@ -290,9 +337,43 @@ footer {
     color: var(--ticker-text);
     padding: 10px;
     border-radius: 5px;
-    margin-bottom: 20px;
     text-align: center;
     border: 1px solid var(--ticker-border);
+}
+
+.news-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.news-item {
+    border-bottom: 1px dashed #ddd;
+    padding: 5px 0;
+}
+
+.news-date {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #666;
+}
+
+[data-theme="dark"] .news-date {
+    color: #aaa;
+}
+
+.news-label {
+    background: #5bd;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    margin-right: 5px;
+}
+
+.news-message {
+    color: var(--text-color);
 }
 
 /* Utility */
@@ -564,9 +645,9 @@ details[open] summary::after {
     border-radius: 0 0 16px 16px;
 }
 
-.close-modal-trigger {
-    /* Style closer to primary for emphasis if desired, but secondary is fine */
-}
+/* .close-modal-trigger {
+    Style closer to primary for emphasis if desired, but secondary is fine
+} */
 
 /* Modal Internal Layout */
 .modal-header-area {

@@ -61,7 +61,7 @@ async function fetchNews() {
         const res = await callAPI('getNews');
         if (res.status === 'success' && res.news && Array.isArray(res.news) && res.news.length > 0) {
 
-            let html = '<ul class="news-list" style="list-style:none; padding:0; margin:0; text-align:left;">';
+            let html = '<ul class="news-list">';
 
             res.news.forEach(item => {
                 const date = item.date || '---';
@@ -69,9 +69,9 @@ async function fetchNews() {
                 const msg = item.message || '';
 
                 html += `
-                    <li style="border-bottom:1px dashed #ddd; padding: 5px 0;">
-                        <span class="news-date" style="font-weight:bold; margin-right:10px; color:#666;">${date}</span>
-                        ${label ? `<span class="news-label" style="background:#5bd; color:white; padding:2px 6px; border-radius:4px; font-size:0.8em; margin-right:5px;">${label}</span>` : ''}
+                    <li class="news-item">
+                        <span class="news-date">${date}</span>
+                        ${label ? `<span class="news-label">${label}</span>` : ''}
                         <span class="news-message">${msg}</span>
                     </li>
                 `;

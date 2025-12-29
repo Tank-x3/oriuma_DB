@@ -69,7 +69,8 @@ function startEditMode(id) {
     // UI Updates
     document.title = "編集モード - Oriuma DB";
     document.querySelector('h1').textContent = "📝 Edit Entry";
-    document.querySelector('header p').textContent = "キャラクター情報の編集";
+    const tagline = document.querySelector('header p');
+    if (tagline) tagline.textContent = "キャラクター情報の編集";
     const submitBtn = document.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.textContent = "更新する";
 
@@ -201,17 +202,27 @@ function setupValidation() {
     const radios = document.getElementsByName('is_en_main');
     const labelKana = document.getElementById('req-kana');
     const labelEn = document.getElementById('req-en');
+    const anyKana = document.getElementById('any-kana');
+    const anyEn = document.getElementById('any-en');
 
     const updateRequired = () => {
         let isEn = false;
         for (let r of radios) { if (r.checked && r.value === 'true') isEn = true; }
 
         if (isEn) {
-            labelKana.style.display = 'none';
-            labelEn.style.display = 'inline-block';
+            // English Main
+            if(labelKana) labelKana.style.display = 'none';
+            if(anyKana) anyKana.style.display = 'inline-block';
+
+            if(labelEn) labelEn.style.display = 'inline-block';
+            if(anyEn) anyEn.style.display = 'none';
         } else {
-            labelKana.style.display = 'inline-block';
-            labelEn.style.display = 'none';
+            // Kana Main
+            if(labelKana) labelKana.style.display = 'inline-block';
+            if(anyKana) anyKana.style.display = 'none';
+
+            if(labelEn) labelEn.style.display = 'none';
+            if(anyEn) anyEn.style.display = 'inline-block';
         }
     };
 
@@ -510,7 +521,8 @@ function handleFileSelect(e) {
             // 2. Reset UI to Register Mode
             document.title = "新規登録 - Oriuma DB";
             document.querySelector('h1').textContent = "✨ New Entry";
-            document.querySelector('header p').textContent = "新規キャラクター登録";
+            const tagline = document.querySelector('header p');
+            if (tagline) tagline.textContent = "新規キャラクター登録";
             const submitBtn = document.querySelector('button[type="submit"]');
             if (submitBtn) submitBtn.textContent = "登録する";
 
