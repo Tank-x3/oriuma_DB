@@ -775,3 +775,117 @@ details[open] summary::after {
     color: var(--text-color);
     border-bottom: 1px solid #f0f0f0;
 }
+
+/* ==========================================================================
+   Tag Management Styles
+   ========================================================================== */
+
+/* Tag Chips (Global) */
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin: 2px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.tag-chip.owner {
+    background-color: rgba(105, 201, 83, 0.15);
+    /* Primary Light */
+    color: var(--primary-dark);
+}
+
+.tag-chip.guest {
+    background-color: #f0f0f0;
+    color: #666;
+    border-color: #ddd;
+}
+
+[data-theme="dark"] .tag-chip.owner {
+    background-color: rgba(105, 201, 83, 0.3);
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .tag-chip.guest {
+    background-color: #333;
+    color: #aaa;
+    border-color: #555;
+}
+
+/* Tag Selection (Register Page) */
+.tag-category-group {
+    background: var(--summary-bg);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.tag-select-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    background: var(--card-bg);
+    /* Or input bg */
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.tag-select-chip:hover {
+    border-color: var(--primary-color);
+}
+
+.tag-select-chip input[type="checkbox"] {
+    accent-color: var(--primary-color);
+}
+
+/* Highlight selected chip visually if needed (JS toggles this generally not needed if native checkbox visible) */
+
+/* Search Accordion Area */
+.search-area-wrapper {
+    margin-bottom: 20px;
+}
+
+.search-accordion {
+    background: var(--card-bg);
+    border: none;
+    box-shadow: var(--shadow);
+}
+
+.search-content {
+    padding: 20px;
+}
+
+.search-tag-group h5 {
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 4px;
+}
+
+/* Search Chips (Clickable Labels) */
+.search-tag-chip {
+    display: inline-block;
+}
+
+/* Guest Tag Editor */
+.tag-del-btn:hover {
+    color: var(--accent-color);
+}
+
+/* Checkbox Label Generic */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox-text {
+    font-weight: bold;
+}

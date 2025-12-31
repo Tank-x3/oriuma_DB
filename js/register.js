@@ -50,7 +50,10 @@ async function init() {
     setupInquiry();
 
     // 3. Load Definitions
-    await loadDefinitions();
+    await Promise.all([
+        loadDefinitions(),
+        loadTagDefinitions()
+    ]);
 
     // 4. Setup Validation Listeners
     setupValidation();
@@ -174,6 +177,16 @@ function fillForm(data, password) {
             addFreeItem(container, fItem.label, fItem.value);
         });
     }
+
+    // Tags
+    if (data.tags_json) {
+        fillTags(data.tags_json);
+    }
+    if (data.is_tag_locked) {
+        const locked = (data.is_tag_locked === true || data.is_tag_locked === 'true');
+        const lockCb = document.querySelector('input[name="is_tag_locked"]');
+        if (lockCb) lockCb.checked = locked;
+    }
 }
 
 // Override addFreeItem to accept values
@@ -211,18 +224,18 @@ function setupValidation() {
 
         if (isEn) {
             // English Main
-            if(labelKana) labelKana.style.display = 'none';
-            if(anyKana) anyKana.style.display = 'inline-block';
+            if (labelKana) labelKana.style.display = 'none';
+            if (anyKana) anyKana.style.display = 'inline-block';
 
-            if(labelEn) labelEn.style.display = 'inline-block';
-            if(anyEn) anyEn.style.display = 'none';
+            if (labelEn) labelEn.style.display = 'inline-block';
+            if (anyEn) anyEn.style.display = 'none';
         } else {
             // Kana Main
-            if(labelKana) labelKana.style.display = 'inline-block';
-            if(anyKana) anyKana.style.display = 'none';
+            if (labelKana) labelKana.style.display = 'inline-block';
+            if (anyKana) anyKana.style.display = 'none';
 
-            if(labelEn) labelEn.style.display = 'none';
-            if(anyEn) anyEn.style.display = 'inline-block';
+            if (labelEn) labelEn.style.display = 'none';
+            if (anyEn) anyEn.style.display = 'inline-block';
         }
     };
 
@@ -262,7 +275,9 @@ async function HandleSubmit(e) {
         name_hk: fd.get('name_hk'),
         trainer_name: fd.get('trainer_name'),
         image_url: fd.get('image_url'),
-        password: password
+        password: password,
+        is_tag_locked: fd.get('is_tag_locked') === 'true',
+        tags_json: collectTags()
     };
 
     // Collect dynamic inputs
@@ -468,6 +483,192 @@ function renderForm(container, defs) {
         }
 
         container.appendChild(section);
+    });
+}
+
+/**
+ * タグ定義を取得して描画
+ */
+async function loadTagDefinitions() {
+    const container = document.getElementById('tag-container');
+    const loading = document.getElementById('tag-section-loading');
+    if (loading) loading.style.display = 'block';
+
+    try {
+        const res = await callAPI('getTagsDefs');
+        if (res.status === 'success' && res.defs && Array.isArray(res.defs)) {
+            // Convert Array to Object based on col_id
+            const formattedDefs = {};
+            res.defs.forEach(row => {
+                if (row.col_id) {
+                    formattedDefs[row.col_id] = {
+                        name: row.category_name,
+                        is_fixed: row.is_fixed,
+                        items: row.items // API returns 'items'
+                    };
+                }
+            });
+            renderTagSection(container, formattedDefs);
+        } else {
+            // Mock
+            console.warn('API getTagsDefs failed/empty.');
+            // renderTagSection(container, MOCK_TAG_DEFS); // Removed Mock
+            container.innerHTML = '<p class="error">タグ定義がありません。</p>';
+        }
+    } catch (e) {
+        console.warn('Tag load failed', e);
+        // Fail silently or show error? For now use Mock fallback logic can be here
+        // renderTagSection(container, MOCK_TAG_DEFS);
+        container.innerHTML = '<p class="error">タグ定義の読み込みに失敗しました</p>';
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+
+// Removed MOCK_TAG_DEFS
+
+function renderTagSection(container, defs) {
+    container.innerHTML = '';
+
+    // Sort keys if needed
+    Object.keys(defs).forEach(colId => {
+        const cat = defs[colId];
+        // Ensure we use col_id from API keys
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'tag-category-group';
+        wrapper.style.marginBottom = '15px';
+        wrapper.dataset.colId = colId; // Store ID for collection
+
+        const title = document.createElement('h4');
+        title.className = 'tag-cat-title';
+        title.textContent = cat.name || cat.category_name || colId;
+        title.style.fontSize = '0.95rem';
+        title.style.marginBottom = '5px';
+        title.style.borderBottom = '1px solid #eee';
+        wrapper.appendChild(title);
+
+        const chipsContainer = document.createElement('div');
+        chipsContainer.className = 'tag-chips-select-area';
+        chipsContainer.style.display = 'flex';
+        chipsContainer.style.flexWrap = 'wrap';
+        chipsContainer.style.gap = '8px';
+
+        // Render existing tags (candidates)
+        if (cat.items && Array.isArray(cat.items)) {
+            cat.items.forEach(tagName => {
+                const label = document.createElement('label');
+                label.className = 'tag-select-chip';
+                // Style handled in CSS
+
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.name = `tag_select_${colId}`; // Dynamic Name
+                chk.value = tagName;
+                chk.style.marginRight = '4px';
+
+                label.appendChild(chk);
+                label.appendChild(document.createTextNode(tagName));
+
+                chipsContainer.appendChild(label);
+            });
+        }
+        wrapper.appendChild(chipsContainer);
+
+        // Free Input (For is_fixed: false)
+        // Check boolean strictly (API might return "true"/"false" string or boolean)
+        const isFixed = (cat.is_fixed === true || cat.is_fixed === 'true');
+
+        if (!isFixed) {
+            const freeInputDiv = document.createElement('div');
+            freeInputDiv.className = 'tag-free-input-area';
+            freeInputDiv.style.marginTop = '8px';
+
+            const ta = document.createElement('textarea');
+            ta.id = `tag_free_${colId}`;
+            ta.name = `tag_free_${colId}`;
+            ta.placeholder = "追加したいタグを入力 (改行区切り)";
+            ta.className = 'form-control';
+            ta.style.width = '100%';
+            ta.style.fontSize = '0.9rem';
+            ta.rows = 2;
+
+            freeInputDiv.appendChild(ta);
+            wrapper.appendChild(freeInputDiv);
+        }
+
+        container.appendChild(wrapper);
+    });
+}
+
+function collectTags() {
+    const validTags = {}; // { cat_001: [ {name: "A", type: "owner"} ] }
+
+    // Iterate over rendered categories via dataset
+    document.querySelectorAll('.tag-category-group').forEach(group => {
+        const colId = group.dataset.colId;
+        if (!colId) return;
+
+        const list = [];
+
+        // Checked items
+        group.querySelectorAll(`input[name="tag_select_${colId}"]:checked`).forEach(chk => {
+            list.push({ name: chk.value, type: 'owner' });
+        });
+
+        // Free items
+        const ta = group.querySelector(`textarea[name="tag_free_${colId}"]`);
+        if (ta && ta.value.trim()) {
+            const lines = ta.value.split('\n');
+            lines.forEach(line => {
+                const val = line.trim();
+                // Avoid duplicates with checked items AND within free text
+                if (val && !list.some(item => item.name === val)) {
+                    list.push({ name: val, type: 'owner' });
+                }
+            });
+        }
+
+        if (list.length > 0) {
+            validTags[colId] = list;
+        }
+    });
+
+    return validTags;
+}
+
+function fillTags(tagsJson) {
+    if (!tagsJson) return;
+
+    Object.keys(tagsJson).forEach(colId => {
+        const tagList = tagsJson[colId]; // Array of {name, type}
+        if (!Array.isArray(tagList)) return;
+
+        const existingNames = new Set();
+
+        // 1. Check existing boxes
+        tagList.forEach(tObj => {
+            const chk = document.querySelector(`input[name="tag_select_${colId}"][value="${CSS.escape(tObj.name)}"]`);
+            if (chk) {
+                chk.checked = true;
+                existingNames.add(tObj.name);
+            }
+        });
+
+        // 2. Add to textarea if not in existing boxes
+        const freeNames = [];
+        tagList.forEach(tObj => {
+            if (!existingNames.has(tObj.name)) {
+                freeNames.push(tObj.name);
+            }
+        });
+
+        if (freeNames.length > 0) {
+            const ta = document.getElementById(`tag_free_${colId}`);
+            if (ta) {
+                ta.value = freeNames.join('\n');
+            }
+        }
     });
 }
 

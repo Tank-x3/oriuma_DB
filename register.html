@@ -87,6 +87,26 @@
                     <input type="text" id="image_url" name="image_url" placeholder="https://..." autocomplete="off">
                 </div>
 
+                <!-- Tag Section -->
+                <div id="tag-section-loading" style="display:none;">
+                    <p>タグ定義をロード中...</p>
+                </div>
+                <div id="tag-section" class="form-section">
+                    <h3>🏷️ タグ設定</h3>
+                    <div id="tag-container">
+                        <!-- JS will inject tag inputs here -->
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="is_tag_locked" value="true">
+                            <span class="checkbox-text">🔒 閲覧者によるタグ編集を禁止する</span>
+                        </label>
+                        <p class="hint" style="font-size: 0.8em; color: #666;">※チェックを入れると、閲覧者がこのキャラクターのタグを追加・削除できなくなります。</p>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
                 <!-- Dynamic Fields Container -->
                 <div id="dynamic-fields-loading">
                     <p>項目定義をロード中...</p>
