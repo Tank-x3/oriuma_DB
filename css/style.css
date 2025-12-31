@@ -278,6 +278,18 @@ footer {
     background-color: var(--primary-dark);
 }
 
+.btn-secondary {
+    background-color: #ddd;
+    /* Light gray for light theme */
+    color: #333;
+    /* Dark text for visibility */
+}
+
+.btn-secondary:hover {
+    background-color: #ccc;
+    color: #333;
+}
+
 .btn-test {
     background-color: #aaa;
     color: #FFFFFF;
@@ -289,10 +301,8 @@ footer {
     background-color: #888;
 }
 
-/* Force white text on buttons to prevent link color override */
-.btn,
+/* Force white text on PRIMARY buttons to prevent link color override */
 .btn-primary,
-a.btn,
 a.btn-primary {
     color: #fff !important;
 }

@@ -100,7 +100,7 @@
                 <!-- Password -->
                 <div class="form-group">
                     <label for="password">編集用パスワード <span class="badge-required">必須</span></label>
-                    <input type="password" id="password" name="password" required placeholder="半角英数"
+                    <input type="password" id="password" name="password" required placeholder="半角英数推奨"
                         autocomplete="new-password">
                     <p class="hint">※後でデータを編集・削除する際に必要になります。</p>
                 </div>
@@ -124,7 +124,7 @@
                 <!-- Resolve Report Button -->
                 <div class="mt-4" style="border-top: 1px dashed #ccc; padding-top: 15px;">
                     <button id="btn-open-resolve" class="btn btn-secondary" style="font-size: 0.9rem;">🛠
-                        再登録完了報告</button>
+                        問い合わせ対応の完了報告</button>
                     <p class="description-text" style="font-size: 0.8rem; margin-top: 5px;">※パスワード忘れ等の対応で再登録を行った場合はこちら
                     </p>
                 </div>
@@ -140,7 +140,7 @@
                         <h3>🔒 認証が必要です</h3>
                     </div>
                     <div id="modal-body" style="text-align: center;">
-                        <p style="margin-bottom: 15px;">このデータを編集するためのパスワードを入力してください。</p>
+                        <p style="margin-bottom: 15px;">この記事を編集するためのパスワードを入力してください。</p>
                         <input type="password" id="auth-password" class="form-control" placeholder="Password"
                             style="width: 80%; padding: 10px; margin-bottom: 10px;">
                         <p id="auth-error" class="error-text"
@@ -166,7 +166,7 @@
                         <h3>🆘 管理者に問い合わせる</h3>
                     </div>
                     <div style="padding: 20px;">
-                        <p>パスワード忘れ等の理由で編集できない場合、タンクの人にリセットを依頼できます。</p>
+                        <p>パスワード忘れ等の理由で編集できない場合、管理者にリセットを依頼できます。</p>
                         <textarea id="inquiry-message" class="form-control" rows="4"
                             placeholder="状況を詳しく書いてください (例: パスワードを忘れました。)"
                             style="width: 100%; margin-top: 10px;"></textarea>
@@ -182,14 +182,14 @@
             <div id="resolve-modal" class="modal-overlay" style="display: none;">
                 <div class="modal-content fade-in-up" style="max-width: 500px; margin: auto;">
                     <div class="modal-header-area" style="padding: 20px; border-bottom: 1px solid #eee;">
-                        <h3>🛠 再登録完了報告 (データマージ依頼)</h3>
+                        <h3>🛠 解決報告 (データマージ依頼)</h3>
                     </div>
                     <div style="padding: 20px;">
-                        <p>発行された問い合わせIDを入力してください。タンクの人が確認し、古いデータをこの新しいデータに統合します。</p>
+                        <p>発行された問い合わせIDを入力してください。管理者が確認し、古いデータをこの新しいデータに統合します。</p>
                         <div class="form-group">
                             <label>問い合わせID (必須)</label>
                             <input type="text" id="resolve-inquiry-id" class="form-control"
-                                placeholder="例: fi4jdkr0">
+                                placeholder="例: req_123456789">
                         </div>
                         <div class="form-group">
                             <label>メッセージ (任意)</label>
@@ -198,7 +198,7 @@
                         </div>
                     </div>
                     <div class="modal-footer text-center">
-                        <button id="btn-send-resolve" class="btn btn-primary">再登録を報告する</button>
+                        <button id="btn-send-resolve" class="btn btn-primary">解決を報告する</button>
                         <a href="#" class="btn-link close-modal-trigger">閉じる</a>
                     </div>
                 </div>
@@ -206,10 +206,9 @@
         </main>
 
         <footer>
-            &copy; 2025 タンクの人
+            &copy; 2025 Oriuma Project
         </footer>
     </div>
 </body>
-
 
 </html>
