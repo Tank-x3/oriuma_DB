@@ -9,14 +9,25 @@ const UI = {
      * (モーダル表示時などに使用)
      */
     lockScroll: function () {
+        // スクロールバーの幅を計算
+        const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+        // レイアウトシフト対策: bodyにpadding-rightを設定
+        if (scrollBarWidth > 0) {
+            document.body.style.paddingRight = `${scrollBarWidth}px`;
+        }
+
         document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden'; // Mobile/Safe lock
     },
 
     /**
      * ドキュメント全体のスクロールを許可する
      */
     unlockScroll: function () {
+        document.body.style.paddingRight = '';
         document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
     },
 
     /**

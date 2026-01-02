@@ -627,6 +627,7 @@ details[open] summary::after {
     justify-content: center;
     /* Horizontal Center */
     backdrop-filter: blur(2px);
+    overscroll-behavior: contain; /* Chain blocking */
 }
 
 .modal-content {
