@@ -162,11 +162,7 @@ function renderList(container, list) {
     });
 }
 
-function formatDate(dateStr) {
-    if (!dateStr) return '-';
-    // Simple format check or return as is
-    return dateStr;
-}
+
 
 /* --- Search Logic --- */
 
@@ -289,13 +285,10 @@ function applyFilter() {
 /* --- Modal Logic --- */
 
 function setupModalEvents() {
-    const modal = document.getElementById('char-modal');
-    const closeBtns = document.querySelectorAll('.close-btn, .close-modal-trigger');
     const editBtn = document.getElementById('btn-modal-edit');
 
-    closeBtns.forEach(btn => {
-        btn.addEventListener('click', closeModal);
-    });
+    // Use UI Helper for Main Modal
+    UI.setupModalClosers('char-modal', closeModal);
 
     // Edit Button Action
     if (editBtn) {
@@ -307,29 +300,22 @@ function setupModalEvents() {
         });
     }
 
-    // Guest Tag Modal Events
     const guestModal = document.getElementById('guest-tag-modal');
-    const cancelGuest = document.getElementById('btn-cancel-guest-tags');
     const saveGuest = document.getElementById('btn-save-guest-tags');
     const addGuest = document.getElementById('btn-add-guest-tag');
 
+    // Setup Guest Modal Closers (Overlays & Buttons if any)
+    UI.setupModalClosers('guest-tag-modal', closeGuestModal);
+    // Explicit cancel button in guest modal (id: btn-cancel-guest-tags)
+    const cancelGuest = document.getElementById('btn-cancel-guest-tags');
     if (cancelGuest) cancelGuest.onclick = closeGuestModal;
+
     if (saveGuest) saveGuest.onclick = submitGuestTags;
     if (addGuest) addGuest.onclick = addGuestTagFromInput;
 
-    // Guest Modal Close
-    if (guestModal) {
-        guestModal.addEventListener('click', (e) => {
-            if (e.target === guestModal) closeGuestModal();
-        });
-    }
-
-    // Close on background click
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    // Close on background click -> Handled by UI.setupModalClosers now?
+    // Wait, UI.setupModalClosers handles overlay click.
+    // So we can remove the manual overlay listener here.
 
     // Close on ESC
     document.addEventListener('keydown', (e) => {
@@ -353,13 +339,13 @@ function openModal(index) {
 
     // Show
     modal.style.display = 'flex'; // Flex for centering
-    document.body.style.overflow = 'hidden'; // Lock Body Scroll
+    UI.lockScroll(); // Lock Body Scroll
 }
 
 function closeModal() {
     const modal = document.getElementById('char-modal');
     modal.style.display = 'none';
-    document.body.style.overflow = ''; // Unlock Body Scroll
+    UI.unlockScroll(); // Unlock Body Scroll
 }
 
 /**
@@ -658,5 +644,6 @@ function closeGuestModal() {
     // Probably nicer to re-open char modal to see result, but we refreshed list...
     // If we refreshed list, modal is gone.
     // Let's just end here.
-    document.body.style.overflow = '';
+    document.body.style.overflow = ''; // Ensure unlock just in case
+    UI.unlockScroll();
 }

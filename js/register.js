@@ -80,7 +80,7 @@ function startEditMode(id) {
     // Show Auth Modal
     const authModal = document.getElementById('auth-modal');
     authModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    UI.lockScroll();
 
     // Auth Event
     document.getElementById('btn-auth-submit').addEventListener('click', checkAuth);
@@ -114,7 +114,7 @@ async function checkAuth() {
         if (res.status === 'success' && res.data) {
             // Success
             document.getElementById('auth-modal').style.display = 'none';
-            document.body.style.overflow = '';
+            UI.unlockScroll();
 
             // Fill Form
             fillForm(res.data, pwd);
@@ -773,41 +773,56 @@ function setupInquiry() {
     if (openResolveBtn) {
         openResolveBtn.addEventListener('click', () => {
             resolveModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            UI.lockScroll();
         });
     }
 
-    const sendResBtn = document.getElementById('btn-send-resolve');
-    if (sendResBtn) sendResBtn.addEventListener('click', sendInquiryResolve);
+    // Generic Close Logic
+    const handleClose = (e) => {
+        if (e && e.preventDefault) e.preventDefault();
 
-    // Close Triggers
-    document.querySelectorAll('.close-modal-trigger').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (inquiryModal) inquiryModal.style.display = 'none';
-            if (resolveModal) resolveModal.style.display = 'none';
-            document.body.style.overflow = ''; // Unlock Scroll!
+        let closingInquiry = false;
+        if (inquiryModal && inquiryModal.style.display === 'flex') closingInquiry = true;
 
-            // Fix 09-4: If in Edit Mode and closing Inquiry, redirect to New Entry mode
-            // This assumes the user either finished inquiry or gave up editing
-            if (currentEditId) {
-                if (window.confirm('編集モードを終了して新規登録画面に戻りますか？\n(バックアップからの復元を行う場合は「OK」を押してください)')) {
-                    window.location.href = 'register.html';
-                    return;
-                }
+        if (inquiryModal) inquiryModal.style.display = 'none';
+        if (resolveModal) resolveModal.style.display = 'none';
+        UI.unlockScroll(); // Unlock Scroll!
+
+        // Fix 09-4: If in Edit Mode and closing Inquiry, redirect to New Entry mode
+        // Only if we were strictly closing the inquiry modal? 
+        // Logic says "If in Edit Mode and closing Inquiry".
+        if (currentEditId && closingInquiry) {
+            if (window.confirm('編集モードを終了して新規登録画面に戻りますか？\n(バックアップからの復元を行う場合は「OK」を押してください)')) {
+                window.location.href = 'register.html';
+                return;
             }
+        }
 
-            // Reset Inquiry Modal State
-            const resArea = document.getElementById('inquiry-result');
-            if (resArea) resArea.style.display = 'none';
-            const formArea = document.getElementById('inquiry-form-area');
-            if (formArea) formArea.style.display = 'block';
+        // Reset Inquiry Modal State
+        const resArea = document.getElementById('inquiry-result');
+        if (resArea) resArea.style.display = 'none';
+        const formArea = document.getElementById('inquiry-form-area');
+        if (formArea) formArea.style.display = 'block';
 
-            // Restore btn visibility
-            const submitBtn = document.getElementById('btn-send-inquiry');
-            if (submitBtn) submitBtn.style.display = 'inline-block';
-        });
-    });
+        // Restore btn visibility
+        const submitBtn = document.getElementById('btn-send-inquiry');
+        if (submitBtn) submitBtn.style.display = 'inline-block';
+    };
+
+    // Replace manual listeners with UI util + Shared Loop for others if needed
+    // But since logic is specific, we can use the helper with handleClose
+    UI.setupModalClosers('inquiry-modal', handleClose);
+    UI.setupModalClosers('resolve-modal', handleClose);
+
+    // Also keep the manual trigger for buttons outside the modal if any? 
+    // .close-modal-trigger is actually inside the modals usually.
+    // UI.setupModalClosers handles .close-modal-trigger now. 
+    // So we don't need the manual loop below.
+
+    // Legacy support if there are buttons OUTSIDE the modal that trigger close?
+    // "close-modal-trigger" is usually inside.
+    // Let's comment out or remove the old loop.
+
 }
 
 function renderInquiryResult(modal, id) {
