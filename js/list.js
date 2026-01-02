@@ -340,6 +340,7 @@ function openModal(index) {
     // Show
     modal.style.display = 'flex'; // Flex for centering
     UI.lockScroll(); // Lock Body Scroll
+    UI.resetScroll('modal-body'); // Reset Scroll Position
 }
 
 function closeModal() {
